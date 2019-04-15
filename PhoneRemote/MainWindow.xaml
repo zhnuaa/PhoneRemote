@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhoneRemote"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" ResizeMode="CanMinimize" BorderBrush="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Background="White">
+        Title="MainWindow" Height="600" Width="800" ResizeMode="CanMinimize" BorderBrush="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Background="White" Icon="Resources/phone.ico">
     <Grid x:Name="_GridRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"/>
@@ -24,7 +24,7 @@
             <ColumnDefinition Width="25*"/>
         </Grid.ColumnDefinitions>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"  Grid.RowSpan="6" BorderThickness="1">
-            <Image x:Name="_ScreencapImage" d:DataContext="{d:DesignInstance {x:Type local:AppState}}" Source="{Binding Screencap}"/>
+            <Image x:Name="_ScreencapImage" d:DataContext="{d:DesignInstance {x:Type local:AppState}}" Source="{Binding Screencap}" MouseLeftButtonDown="_ScreencapImage_MouseLeftButtonDown"/>
         </Border>
         <TextBox x:Name="_IP" Grid.Column="2" Margin="0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding IP}" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" d:DataContext="{d:DesignInstance {x:Type local:AppState}}"/>
         <Button x:Name="_BTNConnect" Content="Connect" Grid.Column="4" Margin="0" Grid.Row="1" FontSize="16" Click="_BTNConnect_Click"/>

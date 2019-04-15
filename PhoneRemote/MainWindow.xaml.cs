@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,12 +27,14 @@ namespace PhoneRemote
     {
         private AppState state;
         private bool cameraOn;
+        private double screencapScale;
         public MainWindow()
         {
             InitializeComponent();
             state = new AppState();
             _GridRoot.DataContext = state;
             cameraOn = false;
+            screencapScale = 1;
         }             
 
         private async void _BTNConnect_Click(object sender, RoutedEventArgs e)
@@ -59,7 +62,7 @@ namespace PhoneRemote
             state.UpdateCmdStdOut(@"Screencap Recieved!");
         }
 
-        public async Task<BitmapImage> AsyncScreencap()
+        public async Task<BitmapImage> AsyncScreencap(int delay=100)
         {
             string pngName = string.Format("screencap_{0:D5}.png", new Random().Next(99999));
             string pngPathOnPhone = string.Format("/sdcard/{0}", pngName);
@@ -74,6 +77,7 @@ namespace PhoneRemote
             cmd.UpdateInputArgs("SaveAsPng", "-p");
             cmd.UpdateOutput("Output", pngPathOnPhone);
             CommandExcutor excutor = new CommandExcutor(cmd);
+            Thread.Sleep(delay); //wait for phone's response
             await excutor.AsyncExcute(5000);            
             cmd = new CmdBuilder()
             {
@@ -97,7 +101,8 @@ namespace PhoneRemote
             await excutor.AsyncExcute();
             return result;
         }
-        public BitmapImage Screencap()
+        
+        public BitmapImage Screencap(int delay=100)
         {
             string pngName = string.Format("screencap_{0:D5}.png", new Random().Next(99999));
             string pngPathOnPhone = string.Format("/sdcard/{0}", pngName);
@@ -112,6 +117,7 @@ namespace PhoneRemote
             cmd.UpdateInputArgs("SaveAsPng", "-p");
             cmd.UpdateOutput("Output", pngPathOnPhone);
             CommandExcutor excutor = new CommandExcutor(cmd);
+            Thread.Sleep(delay); //wait for phone's response
             excutor.Excute();
             cmd = new CmdBuilder()
             {
@@ -135,6 +141,7 @@ namespace PhoneRemote
             excutor.Excute();
             return result;
         }
+        
         private void SendKey(int keyCode)
         {
             CmdBuilder cmd = new CmdBuilder()
@@ -260,7 +267,7 @@ namespace PhoneRemote
             state.UpdateCmdStdOut(@"Starting Camera...");
             StartApp("android.media.action.STILL_IMAGE_CAMERA");
             state.UpdateCmdStdOut(@"Camera Started! Waiting for Screencap...");
-            state.Screencap = await AsyncScreencap();
+            state.Screencap = await AsyncScreencap(500);
             state.UpdateCmdStdOut(@"Screencap Recieved!");
             cameraOn = true;
         }
@@ -269,7 +276,7 @@ namespace PhoneRemote
         {
             state.UpdateCmdStdOut("\n");
             state.UpdateCmdStdOut(@"Waiting for Screencap...");
-            state.Screencap = await AsyncScreencap();
+            state.Screencap = await AsyncScreencap(0);
             state.UpdateCmdStdOut(@"Screencap Recieved!");
         }
 
@@ -281,7 +288,7 @@ namespace PhoneRemote
                 state.UpdateCmdStdOut(@"Tap Camera Record Button...");
                 SendTap(640,1200);
                 state.UpdateCmdStdOut(@"Record Button Tapped! Waiting for Screencap...");
-                state.Screencap = await AsyncScreencap();
+                state.Screencap = await AsyncScreencap(300);
                 state.UpdateCmdStdOut(@"Screencap Recieved!");
             }
             else
@@ -299,7 +306,7 @@ namespace PhoneRemote
                 state.UpdateCmdStdOut(@"Tap Screen to Auto Focus...");
                 SendTap(360, 640);
                 state.UpdateCmdStdOut(@"Screen Tapped! Waiting for Screencap...");
-                state.Screencap = await AsyncScreencap();
+                state.Screencap = await AsyncScreencap(500);
                 state.UpdateCmdStdOut(@"Screencap Recieved!");
             }
             else
@@ -316,8 +323,8 @@ namespace PhoneRemote
                 state.UpdateCmdStdOut("\n");
                 state.UpdateCmdStdOut(@"Tap Camera Shot/Pause Button...");
                 SendTap(360, 1200);
-                state.UpdateCmdStdOut(@"Shot/Pause Button Tapped! Waiting for Screencap...");
-                state.Screencap = await AsyncScreencap();
+                state.UpdateCmdStdOut(@"Shot/Pause Button Tapped! Waiting for Screencap...");                
+                state.Screencap = await AsyncScreencap(300);
                 state.UpdateCmdStdOut(@"Screencap Recieved!");
             }
             else
@@ -337,6 +344,24 @@ namespace PhoneRemote
             state.Screencap = await AsyncScreencap();
             state.UpdateCmdStdOut(@"Screencap Recieved!");
             cameraOn = true;
+        }
+
+        private async void _ScreencapImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            screencapScale = 1280 / _ScreencapImage.ActualHeight;
+            Debug.WriteLine(string.Format("scale:{0}", screencapScale));
+            Point position = e.GetPosition(_ScreencapImage);
+            Point posOnPhone = new Point(position.X * screencapScale, position.Y * screencapScale);
+            Debug.WriteLine(string.Format("Posion:{0},{1}", position.X, position.Y));
+            Debug.WriteLine(string.Format("PosionOnPhone:{0},{1}", posOnPhone.X, posOnPhone.Y));
+            int posOnPhoneX = (int)Math.Round(posOnPhone.X);
+            int posOnPhoneY = (int)Math.Round(posOnPhone.Y);
+            state.UpdateCmdStdOut("\n");
+            state.UpdateCmdStdOut(@"Tapping Screen...");
+            SendTap(posOnPhoneX, posOnPhoneY);
+            state.UpdateCmdStdOut(@"Screen Tapped! Waiting for Screencap...");
+            state.Screencap = await AsyncScreencap(300);
+            state.UpdateCmdStdOut(@"Screencap Recieved!");
         }
     }
 
