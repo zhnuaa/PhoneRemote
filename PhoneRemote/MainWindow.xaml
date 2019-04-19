@@ -26,11 +26,11 @@
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"  Grid.RowSpan="6" BorderThickness="1">
             <Image x:Name="_ScreencapImage" d:DataContext="{d:DesignInstance {x:Type local:AppState}}" Source="{Binding Screencap}" MouseLeftButtonDown="_ScreencapImage_MouseLeftButtonDown"/>
         </Border>
-        <TextBox x:Name="_IP" Grid.Column="2" Margin="0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding IP}" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" d:DataContext="{d:DesignInstance {x:Type local:AppState}}"/>
+        <TextBox x:Name="_IP" Grid.Column="2" Margin="0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding IP, Mode=TwoWay}" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" d:DataContext="{d:DesignInstance {x:Type local:AppState}}"/>
         <Button x:Name="_BTNConnect" Content="Connect" Grid.Column="4" Margin="0" Grid.Row="1" FontSize="16" Click="_BTNConnect_Click"/>
         <ScrollViewer Grid.ColumnSpan="3" Grid.Column="2" Grid.Row="3">
             <TextBox x:Name="_CmdExport" TextWrapping="Wrap" Text="{Binding CmdStdOut}" FontSize="14" d:DataContext="{d:DesignInstance {x:Type local:AppState}}" HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True"/>
-        </ScrollViewer>        
+        </ScrollViewer>
         <Grid Grid.ColumnSpan="3" Grid.Column="2" Grid.Row="5" Margin="0,0,0,0.4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -66,7 +66,10 @@
             <Button x:Name="_BTNRecord" Content="Record" Grid.Column="5" Grid.Row="5" Click="_BTNRecord_Click"/>
             <Button x:Name="_BTNFocus" Content="Focus" Grid.Column="3" Grid.Row="5" Click="_BTNFocus_Click"/>
             <Button x:Name="_BTNShot" Content="Shot/Pause" Grid.Column="7" Grid.Row="5" Click="_BTNShot_Click"/>
+            <TextBox x:Name="_TBCommand" Grid.ColumnSpan="6" Grid.Row="7" TextWrapping="Wrap" Text="shell input swipe 360 10 360 500" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Button x:Name="_BTNSendCom" Content="Send" Grid.Column="7" Grid.Row="7" Click="_BTNSendCom_Click"/>
         </Grid>
+
 
     </Grid>
 </Window>

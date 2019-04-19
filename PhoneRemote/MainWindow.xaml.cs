@@ -35,6 +35,7 @@ namespace PhoneRemote
             _GridRoot.DataContext = state;
             cameraOn = false;
             screencapScale = 1;
+            state.IP = "192.168.1.110";
         }             
 
         private async void _BTNConnect_Click(object sender, RoutedEventArgs e)
@@ -46,9 +47,11 @@ namespace PhoneRemote
             cmd.UpdateInputArgs("-a", "-a");
             cmd.UpdateInputArgs("Connect", "connect");
             cmd.UpdateInput("IP", state.IP);
-            CommandExcutor excutor = new CommandExcutor(cmd);
+            Debug.WriteLine(cmd.GetFullCmdString());
+            var excutor = new CommandExcutor(cmd);
             var stdout = await excutor.AsyncExcute(5000);
             state.UpdateCmdStdOut(stdout["StdOut"]);
+            Debug.WriteLine(cmd.GetFullCmdString());
             cmd = new CmdBuilder()
             {
                 Command = "adb"
@@ -72,10 +75,12 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Screencap", "screencap");
             cmd.UpdateInputArgs("SaveAsPng", "-p");
             cmd.UpdateOutput("Output", pngPathOnPhone);
+            Debug.WriteLine(cmd.GetFullCmdString());
             CommandExcutor excutor = new CommandExcutor(cmd);
             Thread.Sleep(delay); //wait for phone's response
             await excutor.AsyncExcute(5000);            
@@ -83,6 +88,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Pull", "pull");
             cmd.UpdateInput("Input", pngPathOnPhone);
             cmd.UpdateOutput("Output", pngPath);
@@ -94,6 +100,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Delete", "delete");
             cmd.UpdateInput("Input", pngPathOnPhone);
@@ -112,6 +119,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Screencap", "screencap");
             cmd.UpdateInputArgs("SaveAsPng", "-p");
@@ -123,6 +131,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Pull", "pull");
             cmd.UpdateInput("Input", pngPathOnPhone);
             cmd.UpdateOutput("Output", pngPath);
@@ -134,6 +143,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Delete", "delete");
             cmd.UpdateInput("Input", pngPathOnPhone);
@@ -148,6 +158,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Input", "input");
             cmd.UpdateInputArgs("InputType", "keyevent");
@@ -161,6 +172,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Input", "input");
             cmd.UpdateInputArgs("InputType", "tap");
@@ -175,6 +187,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Input", "input");
             cmd.UpdateInputArgs("InputType", "swipe");
@@ -192,6 +205,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Start", "am start");
             cmd.UpdateInputArgs("ActionType", actionType);
@@ -335,8 +349,7 @@ namespace PhoneRemote
         }
 
         private async void _BTNFTP_Click(object sender, RoutedEventArgs e)
-        {
-            
+        {            
             state.UpdateCmdStdOut("\n");
             state.UpdateCmdStdOut(@"Starting FTP Server...");
             StartApp("com.estrongs.android.pop/com.estrongs.android.pop.ftp.ESFtpShortcut",false);
@@ -361,6 +374,23 @@ namespace PhoneRemote
             SendTap(posOnPhoneX, posOnPhoneY);
             state.UpdateCmdStdOut(@"Screen Tapped! Waiting for Screencap...");
             state.Screencap = await AsyncScreencap(300);
+            state.UpdateCmdStdOut(@"Screencap Recieved!");
+        }
+
+        private async void _BTNSendCom_Click(object sender, RoutedEventArgs e)
+        {
+            state.UpdateCmdStdOut("\n");
+            CmdBuilder cmd = new CmdBuilder()
+            {
+                Command = "adb"
+            };
+            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            cmd.UpdateInputArgs("args", _TBCommand.Text);
+            CommandExcutor excutor = new CommandExcutor(cmd);
+            var stdout = await excutor.AsyncExcute(5000);
+            state.UpdateCmdStdOut(stdout["StdOut"]);
+            state.UpdateCmdStdOut(@"Command Sended!Waiting for Screencap...");
+            state.Screencap = await AsyncScreencap(0);
             state.UpdateCmdStdOut(@"Screencap Recieved!");
         }
     }
@@ -405,7 +435,7 @@ namespace PhoneRemote
         public AppState()
         {
             Screencap = null;
-            IP = @"192.168.1.102";
+            IP = @"192.168.1.110";
             CmdStdOut = string.Empty;
         }
         public void UpdateCmdStdOut(string stdout)
