@@ -74,8 +74,7 @@ namespace PhoneRemote
             CmdBuilder cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Screencap", "screencap");
             cmd.UpdateInputArgs("SaveAsPng", "-p");
@@ -87,8 +86,7 @@ namespace PhoneRemote
             cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Pull", "pull");
             cmd.UpdateInput("Input", pngPathOnPhone);
             cmd.UpdateOutput("Output", pngPath);
@@ -99,8 +97,7 @@ namespace PhoneRemote
             cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Delete", "delete");
             cmd.UpdateInput("Input", pngPathOnPhone);
@@ -118,8 +115,7 @@ namespace PhoneRemote
             CmdBuilder cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Screencap", "screencap");
             cmd.UpdateInputArgs("SaveAsPng", "-p");
@@ -130,8 +126,7 @@ namespace PhoneRemote
             cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Pull", "pull");
             cmd.UpdateInput("Input", pngPathOnPhone);
             cmd.UpdateOutput("Output", pngPath);
@@ -142,8 +137,7 @@ namespace PhoneRemote
             cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Delete", "delete");
             cmd.UpdateInput("Input", pngPathOnPhone);
@@ -157,8 +151,7 @@ namespace PhoneRemote
             CmdBuilder cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Input", "input");
             cmd.UpdateInputArgs("InputType", "keyevent");
@@ -171,8 +164,7 @@ namespace PhoneRemote
             CmdBuilder cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Input", "input");
             cmd.UpdateInputArgs("InputType", "tap");
@@ -186,8 +178,7 @@ namespace PhoneRemote
             CmdBuilder cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Input", "input");
             cmd.UpdateInputArgs("InputType", "swipe");
@@ -205,7 +196,7 @@ namespace PhoneRemote
             {
                 Command = "adb"
             };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            
             cmd.UpdateInputArgs("Shell", "shell");
             cmd.UpdateInputArgs("Start", "am start");
             cmd.UpdateInputArgs("ActionType", actionType);
@@ -383,8 +374,7 @@ namespace PhoneRemote
             CmdBuilder cmd = new CmdBuilder()
             {
                 Command = "adb"
-            };
-            cmd.UpdateInputArgs("Device", "-s", string.Format("{0}:5555", state.IP));
+            };            
             cmd.UpdateInputArgs("args", _TBCommand.Text);
             CommandExcutor excutor = new CommandExcutor(cmd);
             var stdout = await excutor.AsyncExcute(5000);
